@@ -18,15 +18,13 @@ import java.util.List;
  *
  * @since 1.0
  */
-public final class ComponentManager {
+public final class ScriptManager{
     
     private final GameObject owner;
-    private final List<Component> components;
     private final List<UpdateScript> scripts;
     
-    public ComponentManager(GameObject owner) {
+    public ScriptManager(GameObject owner) {
         this.owner = owner;
-        this.components = new ArrayList<>();
         this.scripts = new ArrayList<>();
     }
 
@@ -35,14 +33,13 @@ public final class ComponentManager {
      *
      * - Pascal Luttgens.
      *
-     * @param components Les components.
      * @param scripts    Les scripts.
      *
      * @since 1.0
      */
-    public void init(Component ... components) {
+    public void init(Script ... scripts) {
         
-        this.components.addAll(Arrays.asList(components));
+        this.scripts.addAll(Arrays.asList(components));
         
         this.components.sort(new Component.UpdatePriorityComparator());
         this.components.stream().forEach(c -> c.init(this));
@@ -53,14 +50,13 @@ public final class ComponentManager {
      * Initialise tous les components
      */
     public void load() {
-        this.components.stream().forEach(c -> c.onLoad());
-        
+        this.scripts.stream().forEach(s -> s.execute());   
     }
     
     public void update() {
-        this.components.stream().map(c -> {
-            c.updateLogic();
-            return c;
+        this.scripts.stream().map(s -> {
+            s.updateLogic();
+            return s;
         }).forEach(c -> c.updateComponent());
     }
 
