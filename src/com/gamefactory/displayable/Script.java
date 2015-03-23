@@ -5,11 +5,10 @@
  */
 package com.gamefactory.displayable;
 
-import com.gamefactory.callbacks.game.Callbacks;
+/**
+ *
+ * @author scalpa
+ */
+public abstract class Script extends Component {
 
-public interface Script<T> extends Callbacks<T> {
-    
-    void execute();
-    
-    boolean isConsumed();
 }

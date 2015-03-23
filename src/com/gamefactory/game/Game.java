@@ -2,6 +2,8 @@ package com.gamefactory.game;
 
 import com.gamefactory.assets.assetmanager.AssetManager;
 import com.gamefactory.audioengine.AudioEngine;
+import com.gamefactory.displayable.gameobjects.EmptyGameObject;
+import com.gamefactory.displayable.gameobjects.Hero;
 import com.gamefactory.displayable.Scene;
 import com.gamefactory.services.ServiceLocator;
 
@@ -20,12 +22,12 @@ import java.util.logging.Logger;
 public class Game extends Canvas implements Runnable {
 
     /**
-     * Longueur de la fenêtre.
+     * Longueur de la fenetre.
      */
     public final static int WIDTH = 400;
 
     /**
-     * Hauteur de la fenêtre.
+     * Hauteur de la fenetre.
      */
     public final static int HEIGHT = 600;
 
@@ -40,12 +42,12 @@ public class Game extends Canvas implements Runnable {
     private Thread thread;
 
     /**
-     * Flag indiquant si le thread est utilisé, apparament inutile, à supprimer.
+     * Flag indiquant si le thread est utlisé, apparament inutile, à supprimer.
      */
     private boolean running;
 
     /**
-     * Ensemble des scènes du jeu.
+     * Ensemble des scene du jeu.
      *
      * @see pcomgamefactory.displayable.Scene
      * @see Displayable
@@ -67,7 +69,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     /**
-     * Crée une fenêtre pour le jeu en fonction de ses dimensions et de son nom.
+     * Crée une fenetre pour le jeu en fonction de ses dimension et de son nom.
      *
      * @see Window
      */
@@ -77,17 +79,17 @@ public class Game extends Canvas implements Runnable {
 
     public void setDisplayable(Displayable displayable) {
         this.displayable = displayable;
-        displayable.load();
+        displayable.init();
     }
 
     public void init() {
         ServiceLocator.provideService("audio", new AudioEngine());
         this.displayable = new Scene();
-        this.displayable.load();
+        this.displayable.init();
     }
     
     /**
-     * Démarre le processus du jeu.
+     * Demarre le processus du jeu.
      */
     public synchronized void start() {
         if (running == false) {
@@ -146,12 +148,7 @@ public class Game extends Canvas implements Runnable {
         stop();
     }
 
-    
-    public void loadGame() {
-        displayable.load();
-    }
-
-	/**
+    /**
      * Met à jour tous les élément de la scene
      */
     public void update() {

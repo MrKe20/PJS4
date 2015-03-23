@@ -1,10 +1,8 @@
 package com.gamefactory.displayable;
 
-import com.gamefactory.scripts.LoadingScript;
-import com.gamefactory.scripts.UpdateScript;
-
+import com.gamefactory.utils.events.Notifier;
+import com.gamefactory.utils.events.Subject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -18,12 +16,12 @@ import java.util.List;
  *
  * @since 1.0
  */
-public final class ComponentManager {
-    
+public final class ComponentManager  {
+
     private final GameObject owner;
     private final List<Component> components;
-    private final List<UpdateScript> scripts;
-    
+    private final List<Script> scripts;
+
     public ComponentManager(GameObject owner) {
         this.owner = owner;
         this.components = new ArrayList<>();
@@ -36,32 +34,44 @@ public final class ComponentManager {
      * - Pascal Luttgens.
      *
      * @param components Les components.
-     * @param scripts    Les scripts.
      *
      * @since 1.0
      */
-    public void init(Component ... components) {
-        
-        this.components.addAll(Arrays.asList(components));
-        
+    public void init(Component... components) {
+        for (Component component : components) {
+            if (component instanceof Script) {
+                this.scripts.add((Script) component);
+            } else {
+                this.components.add(component);
+            }
+        }
         this.components.sort(new Component.UpdatePriorityComparator());
-        this.components.stream().forEach(c -> c.init(this));
-        
     }
 
     /**
      * Initialise tous les components
      */
-    public void load() {
-        this.components.stream().forEach(c -> c.onLoad());
-        
+    public void initComponents() {
+        Iterator<Component> itComponent = this.components.iterator();
+        while (itComponent.hasNext()) {
+            itComponent.next().init(this);
+        }
+
+        Iterator<Script> itScript = this.scripts.iterator();
+        while (itScript.hasNext()) {
+            itScript.next().init(this);
+        }
+        System.out.println(this.owner.id + " : " + this.components.toString() + "   " + this.scripts.toString());
+
     }
-    
+
     public void update() {
-        this.components.stream().map(c -> {
-            c.updateLogic();
-            return c;
-        }).forEach(c -> c.updateComponent());
+        for (Script script : this.scripts) {
+            script.update();
+        }
+        for (Component component : this.components) {
+            component.update();
+        }
     }
 
 // A modifier.
@@ -84,7 +94,7 @@ public final class ComponentManager {
         }
         throw new IllegalStateException("Component manquant : " + componentName);
     }
-    
+
     public Component getComponent(Class<? extends Component> componentClass) {
         Iterator<Component> it = components.iterator();
         while (it.hasNext()) {
@@ -140,21 +150,9 @@ public final class ComponentManager {
         }
         return false;
     }
-    
+
     public Component getComponentFromGO(String id, Class<? extends Component> componentClass) {
-        return this.owner.getOwner().getGameObject(id).getComponentManager().getComponent(componentClass);
+        return this.owner.getScene().getGameObject(id).getComponentManager().getComponent(componentClass);
     }
 
-    /**
-     * Retourne la Scène
-     *
-     */
-    public Scene getScene() {
-        return this.owner.getOwner();
-    }
-    
-    public GameObject getGameObject() {
-        return owner;
-    }
-    
 }

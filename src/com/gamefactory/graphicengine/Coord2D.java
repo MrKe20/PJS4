@@ -4,9 +4,6 @@
  */
 package com.gamefactory.graphicengine;
 
-import java.awt.Point;
-import java.awt.Rectangle;
-
 /**
  * <p>
  * <b>Coord2D</b> est la classe permettant la gestion de coordonnées 2D
@@ -17,7 +14,7 @@ import java.awt.Rectangle;
  *
  * @author Le Victor
  * @author Luttgens Pascal
- * @version 2.0
+ * @version 1.1
  * @since 1.0
  */
 public class Coord2D {
@@ -32,7 +29,7 @@ public class Coord2D {
      *
      * @since 1.0
      */
-    private int x;
+    private int _x;
 
     /**
      * Coordonnée en ordonnée. Doit être supérieure ou égale à 0.
@@ -44,7 +41,7 @@ public class Coord2D {
      *
      * @since 1.0
      */
-    private int y;
+    private int _y;
 
     /**
      * Crée un couple de coordonnées à partir d'un couple donné en paramètre.
@@ -55,17 +52,17 @@ public class Coord2D {
      *
      * @throws IllegalArgumentException Si les cordonnées sont négatives
      *
-     * @see #x
-     * @see #y
+     * @see #_x
+     * @see #_y
      *
      * @since 1.0
      */
-    public Coord2D(int x, int y) {
+    public Coord2D(int x, int y) throws IllegalArgumentException {
         if (x < 0 || y < 0) {
             throw new IllegalArgumentException("Coordinates must be positive.");
         }
-        this.x = x;
-        this.y = y;
+        _x = x;
+        _y = y;
     }
 
     /**
@@ -73,12 +70,12 @@ public class Coord2D {
      *
      * @return coordonnée de l'objet en abscisse
      *
-     * @see #x
+     * @see #_x
      *
      * @since 1.0
      */
     public int getX() {
-        return this.x;
+        return _x;
     }
 
     /**
@@ -86,12 +83,12 @@ public class Coord2D {
      *
      * @return coordonnée de l'objet en ordonnée
      *
-     * @see #y
+     * @see #_y
      *
      * @since 1.0
      */
     public int getY() {
-        return this.y;
+        return _y;
     }
 
     /**
@@ -101,15 +98,15 @@ public class Coord2D {
      *
      * @throws IllegalArgumentException Si x est strictement inférieur à 0
      *
-     * @see #x
+     * @see #_x
      *
      * @since 1.0
      */
-    public void setX(int x) {
+    public void setX(int x) throws IllegalArgumentException {
         if (x < 0) {
             throw new IllegalArgumentException("Coordinate must be postive");
         }
-        this.x = x;
+        _x = x;
     }
 
     /**
@@ -119,15 +116,15 @@ public class Coord2D {
      *
      * @throws IllegalArgumentException Si y est strictement inférieur à 0
      *
-     * @see #y
+     * @see #_y
      *
      * @since 1.0
      */
-    public void setY(int y) {
+    public void setY(int y) throws IllegalArgumentException {
         if (y < 0) {
             throw new IllegalArgumentException("Coordinate must be postive");
         }
-        this.y = y;
+        _y = y;
     }
 
     /**
@@ -145,16 +142,16 @@ public class Coord2D {
      *
      * @throws IllegalArgumentException Si ratio &lt;= 1
      *
-     * @see #x
-     * @see #y
+     * @see #_x
+     * @see #_y
      *
      * @since 1.0
      */
-    public Integer convCoord(int ratio) {
+    public Integer convCoord(int ratio) throws IllegalArgumentException {
         if (ratio <= 1) {
             throw new IllegalArgumentException("Width must be strictly superior to 1");
         }
-        return this.y * ratio + this.x;
+        return _y * ratio + _x;
     }
 
     /**
@@ -173,23 +170,16 @@ public class Coord2D {
      *
      * @throws IllegalArgumentException Si ratio &lt;= 1
      *
-     * @see #x
-     * @see #y
+     * @see #_x
+     * @see #_y
      *
      * @since 1.1
      */
-    public static Coord2D convCoord(int ratio, int pos) {
+    public static Coord2D convCoord(int ratio, int pos) throws IllegalArgumentException {
         if (ratio <= 1) {
             throw new IllegalArgumentException("Width must be strictly superior to 1");
         }
         return new Coord2D(pos % ratio, pos / ratio);
-    }
-    
-    public boolean isBetween(Coord2D c1, Coord2D c2) {
-        int c2x = c2.getX() - c1.getX();
-        int c2y = c2.getY() - c1.getY();
-        Rectangle r = new Rectangle(c1.getX(), c1.getY(), c2x < 0 ? -c2x : c2x, c2y < 0 ? -c2y : c2y);
-        return r.contains(new Point(this.x, this.y));
     }
 
 }
